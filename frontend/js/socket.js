@@ -20,21 +20,32 @@ socket.on("connect_error", (error) => {
 })
 
 export function connectSocket() {
+  console.log("CONNECT SOCKET CALLED");
+
   if (socket.connected) {
-    return Promise.resolve()
+    console.log("SOCKET ALREADY CONNECTED");
+    return Promise.resolve();
   }
 
-  return new Promise((resolve, reject)=> {
+  return new Promise((resolve, reject) => {
+
     socket.once("connect", () => {
-      resolve()
-    })
+      console.log("SOCKET CONNECTED:", socket.id);
+      resolve();
+    });
 
     socket.once("connect_error", (error) => {
-      reject(error)
+      console.error("SOCKET CONNECT ERROR:", error.message);
+      reject(error);
     });
-      console.log("SOCKET TOKEN EXISTS:", !!getAccessToken());
-    socket.connect()
-  })
+
+    console.log("ABOUT TO CALL SOCKET.CONNECT");
+    console.log("SOCKET TOKEN EXISTS:", !!getAccessToken());
+
+    socket.connect();
+
+    console.log("SOCKET.CONNECT CALLED");
+  });
 }
 
 export default socket
