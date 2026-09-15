@@ -1,4 +1,4 @@
 const CONFIG = {
-   API_BASE_URL :"http://localhost:5003/api",
-  SOCKET_URL: "http://localhost:5003"
+   API_BASE_URL :" https://meetly-9flw.onrender.com/api",
+  SOCKET_URL: " https://meetly-9flw.onrender.com"
 };
