@@ -1,43 +1,38 @@
-const RESEND_API_URL = "https://api.resend.com/emails";
+import nodemailer from "nodemailer";
+
+console.log("SMTP HOST:", process.env.SMTP_HOST);
+console.log("SMTP PORT:", process.env.SMTP_PORT);
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: process.env.SMTP_SECURE === "true",
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD
+  }
+});
+
 
 export const verifyEmailConnection = async () => {
-  if (!process.env.RESEND_API_KEY) {
-    console.error("RESEND_API_KEY is not configured");
-    return;
+  try {
+    await transporter.verify();
+    console.log("SMTP server is ready");
+  } catch (error) {
+    console.error("SMTP connection failed:", error);
   }
-
-  console.log("Resend email service is configured");
 };
 
 export const sendVerificationEmail = async ({ email, otp }) => {
-  const response = await fetch(RESEND_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`
-    },
-    body: JSON.stringify({
-      from: `Zoom Clone <onboarding@resend.dev>`,
-      to: [email],
-      subject: "Verify your email",
-      text: `Your email verification OTP is ${otp}. It expires in 10 minutes.`,
-      html: `
-        <h2>Verify your email</h2>
-        <p>Your email verification OTP is:</p>
-        <h1>${otp}</h1>
-        <p>This OTP expires in 10 minutes.</p>
-      `
-    })
+  await transporter.sendMail({
+    from: `"Zoom Clone" <${process.env.SMTP_FROM}>`,
+    to: email,
+    subject: "Verify your email",
+    text: `Your email verification OTP is ${otp}. It expires in 10 minutes.`,
+    html: `
+      <h2>Verify your email</h2>
+      <p>Your verification OTP is:</p>
+      <h1>${otp}</h1>
+      <p>This OTP expires in 10 minutes.</p>
+    `
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    console.error("Resend email failed:", data);
-    throw new Error(data.message || "Failed to send email");
-  }
-
-  console.log("Verification email sent:", data.id);
-
-  return data;
 };
