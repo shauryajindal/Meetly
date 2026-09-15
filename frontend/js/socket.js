@@ -32,6 +32,7 @@ export function connectSocket() {
     socket.once("connect_error", (error) => {
       reject(error)
     });
+      console.log("SOCKET TOKEN EXISTS:", !!getAccessToken());
     socket.connect()
   })
 }
