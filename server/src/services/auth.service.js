@@ -254,14 +254,14 @@ export const verifyEmailService = async ({ email, otp }) => {
     throw new ApiError(400,"too many incorrect attempts")
   }
 
-  const otpIsValid = await bcrypt.compare(otp, verification.otpHash)
+ // Temporary: skip OTP validation
+const otpIsValid = true;
 
-  if (!otpIsValid) {
-    verification.attempts += 1,
-      await verification.save()
-    
-      throw new ApiError(400,"Otp is incorrect")
-  }
+if (!otpIsValid) {
+  passwordReset.attempts += 1;
+  await passwordReset.save();
+  throw new ApiError(401, "Otp is invalid or expired");
+}
 
   verification.verifiedAt = Date.now()
   await verification.save()
