@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="/css/theme.css">
+  <title>Dashboard</title>
+
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+
+<body>
+
+  <!-- =====================================================
+       BACKGROUND
+  ====================================================== -->
+
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="grid-overlay"></div>
+
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <header class="dashboard-header">
+
+    <div class="brand">
+      <div class="brand-mark">
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="brand-name">
+        <span class="brand-primary">Meet</span><span class="brand-accent">ly</span>
+      </div>
+    </div>
+
+
+    <div class="header-right">
+
+      <div class="user-mini">
+
+        <img
+          id="userAvatar"
+          src=""
+          alt="User avatar"
+        />
+
+        <div class="user-mini-info">
+          <strong id="userName">Loading...</strong>
+          <span id="userEmail">Loading...</span>
+        </div>
+
+      </div>
+
+      <button id="logoutButton">
+        <span>Logout</span>
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
+  <main class="dashboard">
+
+
+    <!-- ===================================================
+         HERO
+    ==================================================== -->
+
+    <section class="dashboard-hero">
+
+      <div class="hero-content">
+
+        <div class="hero-eyebrow">
+          <span class="status-dot"></span>
+          Your workspace
+        </div>
+
+        <h1>
+          <span id="welcomeMessage">Welcome</span>
+        </h1>
+
+        <p class="hero-description">
+          Create a meeting, join your team, or pick up where
+          you left off.
+        </p>
+
+      </div>
+
+
+      <div class="hero-orbit">
+
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+
+        <div class="orbit-core">
+          <div class="core-dot"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         QUICK ACTIONS
+    ==================================================== -->
+
+    <section class="meeting-actions">
+
+
+      <!-- CREATE -->
+      <div class="action-card create-card">
+
+        <div class="card-glow"></div>
+
+        <div class="action-top">
+
+          <div class="action-icon create-icon">
+            <span></span>
+            <span></span>
+          </div>
+
+          <span class="action-label">
+            New meeting
+          </span>
+
+        </div>
+
+
+        <div class="action-content">
+
+          <h2>
+            Create a meeting
+          </h2>
+
+          <p>
+            Start a new conversation and invite people
+            whenever you're ready.
+          </p>
+
+
+          <div class="field-group">
+
+            <label for="meetingTitleInput">
+              Meeting title
+            </label>
+
+            <input
+              id="meetingTitleInput"
+              type="text"
+              placeholder="e.g. Product sync"
+              autocomplete="off"
+            />
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="meetingDescriptionInput">
+              Description
+            </label>
+
+            <textarea
+              id="meetingDescriptionInput"
+              placeholder="What's this meeting about?"
+            ></textarea>
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="meetingScheduleInput">
+              Schedule
+            </label>
+
+            <input
+              id="meetingScheduleInput"
+              type="datetime-local"
+            />
+
+          </div>
+
+
+          <button
+            id="createMeetingButton"
+            class="primary-action"
+            type="button"
+          >
+
+            <span>Create Meeting</span>
+
+            <span class="button-arrow">
+              →
+            </span>
+
+          </button>
+
+
+          <p id="createMeetingError"></p>
+
+        </div>
+
+      </div>
+
+
+      <!-- JOIN -->
+      <div class="action-card join-card">
+
+        <div class="card-glow"></div>
+
+        <div class="action-top">
+
+          <div class="action-icon join-icon">
+            <span></span>
+          </div>
+
+          <span class="action-label">
+            Existing meeting
+          </span>
+
+        </div>
+
+
+        <div class="action-content">
+
+          <h2>
+            Join a meeting
+          </h2>
+
+          <p>
+            Have a meeting ID? Enter it below and jump
+            straight into the room.
+          </p>
+
+
+          <div class="join-visual">
+
+            <div class="join-ring ring-one"></div>
+            <div class="join-ring ring-two"></div>
+
+            <div class="join-center">
+              <div class="join-center-dot"></div>
+            </div>
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="roomIdInput">
+              Meeting ID
+            </label>
+
+            <input
+              id="roomIdInput"
+              type="text"
+              placeholder="Enter meeting ID"
+              autocomplete="off"
+            />
+
+          </div>
+
+
+          <button
+            id="joinMeetingButton"
+            class="secondary-action"
+            type="button"
+          >
+
+            <span>Join Meeting</span>
+
+            <span class="button-arrow">
+              →
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         RECENT MEETINGS
+    ==================================================== -->
+
+    <section class="recent-meetings">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="section-eyebrow">
+            Activity
+          </span>
+
+          <h2>
+            Recent meetings
+          </h2>
+
+        </div>
+
+        <div class="section-line"></div>
+
+      </div>
+
+
+      <div id="meetingsList">
+
+        <p>No recent meetings.</p>
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+  <script src="../js/config.js"></script>
+
+  <script
+    type="module"
+    src="../js/dashboard.js"
+  ></script>
+
+</body>
+</html>

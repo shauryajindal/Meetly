@@ -1,0 +1,1075 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background: #18191b;
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.meeting {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.meeting-header {
+    height: 60px;
+    padding: 0 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #202124;
+    border-bottom: 1px solid #303134;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.brand-dot {
+    width: 10px;
+    height: 10px;
+
+    background: #4f8cff;
+    border-radius: 50%;
+}
+
+.meeting-info {
+    color: #aaa;
+    font-size: 14px;
+}
+
+
+/* =========================
+   VIDEO AREA
+========================= */
+
+.video-area {
+    position: relative;
+
+    flex: 1;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.video-grid {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+
+    gap: 12px;
+
+    align-content: center;
+    justify-content: center;
+}
+
+
+/* =========================
+   1 REMOTE PARTICIPANT
+========================= */
+
+.video-grid[data-count="1"] {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.video-grid[data-count="1"] video {
+    max-height: 70vh;
+}
+
+
+/* =========================
+   2 REMOTE PARTICIPANTS
+========================= */
+
+.video-grid[data-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+/* =========================
+   3 REMOTE PARTICIPANTS
+========================= */
+
+.video-grid[data-count="3"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+/* =========================
+   4 REMOTE PARTICIPANTS
+========================= */
+
+.video-grid[data-count="4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+/* =========================
+   5–6 REMOTE PARTICIPANTS
+========================= */
+
+.video-grid[data-count="5"],
+.video-grid[data-count="6"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+
+/* =========================
+   7+ REMOTE PARTICIPANTS
+========================= */
+
+.video-grid[data-count="7"],
+.video-grid[data-count="8"],
+.video-grid[data-count="9"],
+.video-grid[data-count="10"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.video-grid video {
+    width: 100%;
+    height: 100%;
+    max-height: 45vh;
+
+    object-fit: contain;
+
+    background: #000;
+
+    border-radius: 10px;
+}
+
+
+/* =========================
+   LOCAL VIDEO
+========================= */
+
+.local-video-container {
+    position: absolute;
+
+    right: 30px;
+    bottom: 25px;
+
+    width: 220px;
+    height: 125px;
+
+    background: #000;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    border: 2px solid #444;
+
+    z-index: 10;
+}
+
+.local-video-container video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.video-label {
+    position: absolute;
+
+    left: 10px;
+    bottom: 8px;
+
+    padding: 4px 8px;
+
+    background: rgba(0, 0, 0, 0.6);
+
+    border-radius: 4px;
+
+    font-size: 12px;
+}
+/* =========================
+   CHAT PANEL
+========================= */
+
+.chat-panel {
+    position: absolute;
+
+    right: 20px;
+    top: 80px;
+    bottom: 100px;
+
+    width: 300px;
+
+    background: #202124;
+    border: 1px solid #303134;
+    border-radius: 10px;
+
+    display: none;
+    flex-direction: column;
+
+    z-index: 200;
+}
+
+
+/* =========================
+   CHAT HEADER
+========================= */
+
+.chat-header {
+    padding: 15px;
+
+    border-bottom: 1px solid #303134;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    color: #ffffff;
+}
+
+
+/* =========================
+   CHAT MESSAGES
+========================= */
+
+.chat-messages {
+    flex: 1;
+
+    padding: 12px;
+
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+/* Individual message */
+
+.chat-message {
+    padding: 8px 10px;
+
+    background: #303134;
+
+    border-radius: 6px;
+
+    word-break: break-word;
+
+    font-size: 14px;
+}
+
+
+/* Sender name */
+
+.chat-message-name {
+    margin-bottom: 3px;
+
+    font-size: 12px;
+
+    color: #aaa;
+}
+
+
+/* =========================
+   CHAT INPUT
+========================= */
+
+.chat-input-area {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px;
+
+    border-top: 1px solid #303134;
+}
+
+#chatInput {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 9px 10px;
+
+    border: none;
+    border-radius: 6px;
+
+    outline: none;
+
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+}
+
+#sendMessageButton {
+    border: none;
+    border-radius: 6px;
+
+    padding: 9px 12px;
+
+    cursor: pointer;
+
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+
+    background: #4f8cff;
+    color: white;
+
+    transition: background 0.2s ease;
+}
+
+#sendMessageButton:hover {
+    background: #3d7bea;
+}
+
+/* =========================
+   CONTROLS
+========================= */
+
+.meeting-controls {
+    height: 80px;
+
+    padding: 0 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    background: #202124;
+
+    border-top: 1px solid #303134;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* =========================
+   NORMAL CONTROL BUTTONS
+========================= */
+
+.control-button {
+    height: 48px;
+
+    border: none;
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: #303134;
+    color: white;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.control-button:hover {
+    background: #3c3d40;
+}
+
+.control-button:active {
+    transform: scale(0.97);
+}
+
+
+/* =========================
+   END MEETING
+========================= */
+
+.end-button {
+    position: absolute;
+
+    right: 135px;
+
+    height: 48px;
+
+    border: none;
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: #dc2626;
+    color: #ffffff;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.end-button:hover {
+    background: #b91c1c;
+}
+
+.end-button:active {
+    transform: scale(0.97);
+}
+
+
+/* =========================
+   LEAVE MEETING
+========================= */
+
+.leave-button {
+    position: absolute;
+
+    right: 24px;
+
+    height: 48px;
+
+    border: none;
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: #d93025;
+    color: white;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.leave-button:hover {
+    background: #b3261e;
+}
+
+.leave-button:active {
+    transform: scale(0.97);
+}
+/* ==================================================
+   MEETING SETTINGS
+   ================================================== */
+
+.meeting-controls {
+    position: relative;
+    z-index: 100;
+}
+
+.control-group {
+    position: relative;
+    overflow: visible;
+}
+
+
+/* Settings button */
+
+#meetingSettingsButton {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+
+    padding: 12px 18px;
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+#meetingSettingsButton:hover {
+    background: rgba(255, 255, 255, 0.13);
+    border-color: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+}
+
+
+/* ==================================================
+   SETTINGS PANEL
+   ================================================== */
+
+.meeting-settings-panel {
+    position: absolute;
+
+    /* Float ABOVE the controls */
+    bottom: calc(100% + 14px);
+    right: 0;
+
+    width: 360px;
+    max-width: calc(100vw - 32px);
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    background: rgba(25, 27, 32, 0.97);
+
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 16px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.55),
+        0 4px 18px rgba(0, 0, 0, 0.35);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    z-index: 1000;
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   SETTINGS HEADER
+   ================================================== */
+
+.settings-header {
+    margin-bottom: 16px;
+}
+
+.settings-header h3 {
+    margin: 0;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   SETTING ROW
+   ================================================== */
+
+.setting-row {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 15px 0;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.setting-row:first-of-type {
+    border-top: none;
+}
+
+
+/* Text area */
+
+.setting-row > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    min-width: 0;
+}
+
+.setting-row strong {
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #ffffff;
+}
+
+.setting-row span {
+    font-size: 12px;
+    line-height: 1.4;
+
+    color: rgba(255, 255, 255, 0.52);
+}
+
+
+/* ==================================================
+   TOGGLE SWITCH
+   ================================================== */
+
+.setting-row input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    width: 44px;
+    height: 24px;
+
+    margin: 0;
+
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.16);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+/* Toggle circle */
+
+.setting-row input[type="checkbox"]::before {
+    content: "";
+
+    position: absolute;
+
+    top: 3px;
+    left: 3px;
+
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+/* ON state */
+
+.setting-row input[type="checkbox"]:checked {
+    background: #4f8cff;
+
+    border-color: #4f8cff;
+}
+
+.setting-row input[type="checkbox"]:checked::before {
+    transform: translateX(20px);
+}
+
+
+/* Disabled */
+
+.setting-row input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+
+/* ==================================================
+   MOBILE
+   ================================================== */
+
+@media (max-width: 600px) {
+
+    .meeting-settings-panel {
+        right: -10px;
+
+        width: min(360px, calc(100vw - 24px));
+    }
+
+}
+/* ================================= */
+/* Participants Panel                */
+/* ================================= */
+
+.participants-panel {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    bottom: 70px;
+
+    width: 320px;
+
+    background: #1f1f1f;
+    color: white;
+
+    border-left: 1px solid #333;
+
+    z-index: 100;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+}
+
+
+/* Header */
+
+.participants-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 16px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    border-bottom: 1px solid #333;
+}
+
+
+/* Sections */
+
+.participants-section {
+    padding: 12px 16px;
+}
+
+
+/* Section title */
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 10px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #aaa;
+    text-transform: uppercase;
+}
+
+
+/* Participant list */
+
+.participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+/* Individual participant */
+
+.participant-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 10px;
+
+    background: #292929;
+    border-radius: 6px;
+}
+
+
+/* Participant name */
+
+.participant-name {
+    font-size: 14px;
+}
+
+
+/* Waiting participant actions */
+
+.participant-actions {
+    display: flex;
+    gap: 6px;
+}
+
+
+.participant-actions button {
+    border: none;
+    border-radius: 4px;
+
+    padding: 6px 9px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+
+.accept-button {
+    background: #2e7d32;
+    color: white;
+}
+
+
+.reject-button {
+    background: #c62828;
+    color: white;
+}
+
+
+/* Empty waiting state */
+
+.empty-waiting {
+    color: #777;
+    font-size: 13px;
+    padding: 6px 0;
+}
+
+.waiting-room-overlay {
+    position: fixed;
+    inset: 0;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.waiting-room-card {
+    width: 380px;
+    padding: 32px;
+    background: #1f1f1f;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.waiting-room-card h2 {
+    margin-bottom: 12px;
+}
+
+.waiting-room-card p {
+    color: #aaa;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.waiting-room-card button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.control-button svg,
+.end-button svg,
+.leave-button svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+/* =========================
+   TOAST NOTIFICATIONS
+========================= */
+
+.toast-container {
+    position: fixed;
+
+    top: 24px;
+    right: 24px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+
+    z-index: 3000;
+
+    pointer-events: none;
+}
+
+.toast {
+    min-width: 280px;
+    max-width: 380px;
+
+    padding: 14px 16px;
+
+    background: #202124;
+    color: white;
+
+    border: 1px solid #303134;
+    border-radius: 8px;
+
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.35);
+
+    opacity: 0;
+    transform: translateY(-10px);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.error {
+    border-left: 4px solid #dc2626;
+}
+
+.toast.success {
+    border-left: 4px solid #22c55e;
+}
+
+.toast.info {
+    border-left: 4px solid #4f8cff;
+}
+
+
+/* =========================
+   CONFIRMATION MODAL
+========================= */
+
+.confirmation-modal {
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.65);
+
+    z-index: 4000;
+}
+
+.confirmation-card {
+    width: 360px;
+
+    padding: 24px;
+
+    background: #202124;
+    color: white;
+
+    border: 1px solid #303134;
+    border-radius: 10px;
+
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5);
+
+    font-family: "Inter", sans-serif;
+}
+
+.confirmation-card h3 {
+    margin: 0 0 10px;
+
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.confirmation-card p {
+    margin: 0 0 24px;
+
+    color: #aaa;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.confirmation-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+}
+
+.confirmation-actions button {
+    padding: 9px 16px;
+
+    border: none;
+    border-radius: 6px;
+
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.confirmation-actions button:active {
+    transform: scale(0.97);
+}
+
+.confirmation-cancel {
+    background: #303134;
+    color: white;
+}
+
+.confirmation-cancel:hover {
+    background: #3c3d40;
+}
+
+.confirmation-confirm {
+    background: #dc2626;
+    color: white;
+}
+
+.confirmation-confirm:hover {
+    background: #b91c1c;
+}

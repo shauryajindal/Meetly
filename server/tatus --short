@@ -1,0 +1,434 @@
+[1mdiff --git a/src/app.js b/src/app.js[m
+[1mindex 94144ef..425e9e6 100644[m
+[1m--- a/src/app.js[m
+[1m+++ b/src/app.js[m
+[36m@@ -1,27 +1,36 @@[m
+[31m-import cors from "cors"[m
+[31m-import cookieParser from "cookie-parser"[m
+[31m-import express from "express"[m
+[31m-import errorMiddleware from "./middlewares/error.middleware.js"[m
+[32m+[m[32mimport cors from "cors";[m
+[32m+[m[32mimport cookieParser from "cookie-parser";[m
+[32m+[m[32mimport express from "express";[m
+ [m
+[31m-const app = express()[m
+[32m+[m[32mconst app = express();[m
+ [m
+[31m-app.use(cors())[m
+[31m-app.use(cookieParser())[m
+[31m-app.use(express.json())[m
+[31m-app.use(errorMiddleware);[m
+[32m+[m[32mapp.use(cors({[m
+[32m+[m[32m    origin: "http://localhost:8080",[m
+[32m+[m[32m    credentials: true[m
+[32m+[m[32m}));[m
+[32m+[m
+[32m+[m[32mapp.use(cookieParser());[m
+[32m+[m[32mapp.use(express.json());[m
+ [m
+ app.get("/api/health", (req, res) => {[m
+[31m-  console.log("Health route hit");[m
+[31m-  res.status(200).json({[m
+[31m-    success: true,[m
+[31m-    message:"Server is running "[m
+[31m-  })[m
+[31m-})[m
+[32m+[m[32m    console.log("Health route hit");[m
+[32m+[m
+[32m+[m[32m    res.status(200).json({[m
+[32m+[m[32m        success: true,[m
+[32m+[m[32m        message: "Server is running"[m
+[32m+[m[32m    });[m
+[32m+[m[32m});[m
+ [m
+ // import routes[m
+[31m-import authRoutes from "./routes/auth.route.js"[m
+[32m+[m[32mimport authRoutes from "./routes/auth.route.js";[m
+ import meetingRoutes from "./routes/meeting.route.js";[m
+[31m-app.use("/api/auth",authRoutes)[m
+[32m+[m
+[32m+[m[32mapp.use("/api/auth", authRoutes);[m
+ app.use("/api/meetings", meetingRoutes);[m
+ [m
+[31m-export default app[m
+[32m+[m[32m// Error middleware MUST be last[m
+[32m+[m[32mimport errorMiddleware from "./middlewares/error.middleware.js";[m
+[32m+[m
+[32m+[m[32mapp.use(errorMiddleware);[m
+[32m+[m
+[32m+[m[32mexport default app;[m
+\ No newline at end of file[m
+[1mdiff --git a/src/controllers/auth.controller.js b/src/controllers/auth.controller.js[m
+[1mindex 84bc3b5..891d317 100644[m
+[1m--- a/src/controllers/auth.controller.js[m
+[1m+++ b/src/controllers/auth.controller.js[m
+[36m@@ -51,7 +51,7 @@[m [mexport const getMe = asyncHandler(async (req, res) => {[m
+       200,[m
+       {[m
+         id: user._id,[m
+[31m-        name: user.name,[m
+[32m+[m[32m        name: user.fullname,[m
+         email: user.email,[m
+         avatar: user.avatar,[m
+         bio: user.bio,[m
+[36m@@ -79,21 +79,22 @@[m [mexport const refresh = asyncHandler(async (req, res) => {[m
+ })[m
+ [m
+ export const logout = asyncHandler(async (req, res) => {[m
+[31m-  const refreshToken = req.cookies.refreshToken[m
+[32m+[m[32m  const refreshToken = req.cookies.refreshToken;[m
+ [m
+[31m-  await logoutUser({refreshToken})[m
+[32m+[m[32m  console.log("LOGOUT REFRESH TOKEN EXISTS:", !!refreshToken);[m
+[32m+[m
+[32m+[m[32m  await logoutUser({ refreshToken });[m
+ [m
+   res.clearCookie("refreshToken", {[m
+     httpOnly: true,[m
+     secure: process.env.NODE_ENV === "production",[m
+     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",[m
+[31m-    [m
+[31m-  })[m
+[32m+[m[32m  });[m
+ [m
+   res.status(200).json([m
+[31m-    new ApiResponse(200,{},"User logged  out successfully") [m
+[31m-  )[m
+[31m-})[m
+[32m+[m[32m    new ApiResponse(200, {}, "User logged out successfully")[m
+[32m+[m[32m  );[m
+[32m+[m[32m});[m
+ [m
+ export const logoutAll = asyncHandler(async (req, res) => {[m
+   await logoutAllSessions({[m
+[36m@@ -181,13 +182,14 @@[m [mexport const googleLoginController = asyncHandler(async (req, res) => {[m
+     ipAddress: req.ip[m
+   });[m
+ [m
+[31m-  return res.status(200).json([m
+[31m-    new ApiResponse([m
+[31m-      200,[m
+[31m-      result,[m
+[31m-      "Google login successful"[m
+[31m-    )[m
+[31m-  );[m
+[32m+[m[32m  res.cookie("refreshToken", result.refreshToken, {[m
+[32m+[m[32m    httpOnly: true,[m
+[32m+[m[32m    secure: process.env.NODE_ENV === "production",[m
+[32m+[m[32m    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",[m
+[32m+[m[32m    maxAge: 7 * 24 * 60 * 60 * 1000,[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  res.redirect("http://localhost:8080/pages/dashboard.html");[m
+ });[m
+ [m
+ export const googleAuthRedirectController = asyncHandler(async (req, res) => {[m
+[1mdiff --git a/src/controllers/meeting.controller.js b/src/controllers/meeting.controller.js[m
+[1mindex 1c0bf39..260e003 100644[m
+[1m--- a/src/controllers/meeting.controller.js[m
+[1m+++ b/src/controllers/meeting.controller.js[m
+[36m@@ -2,12 +2,12 @@[m [mimport asyncHandler from "../utils/asyncHandler.js"[m
+ import ApiResponse from "../utils/api-response.js"[m
+ import {[m
+   createMeeting, getMeetingByRoomId, updateMeeting, startMeeting, endMeeting,[m
+[31m-  joinMeeting,leftMeeting} from "../services/meeting.service.js"[m
+[32m+[m[32m  joinMeeting,leftMeeting,getMeetings} from "../services/meeting.service.js"[m
+[32m+[m[32mimport { getSocketIO } from "../socket.js";[m
+ [m
+[31m-[m
+[31m-[m
+[31m-export const create=asyncHandler(async(req,res)=>{[m
+[31m-  const {title,description,scheduledFor,settings} =req.body;[m
+[32m+[m[32mexport const create = asyncHandler(async (req, res) => {[m
+[32m+[m[32m  console.log("CREATE MEETING BODY:", req.body);[m[41m [m
+[32m+[m[32m  const {title,description,scheduledFor,settings}=req.body;[m
+ [m
+   const meeting=await createMeeting({[m
+     userId:req.user.userId,[m
+[36m@@ -58,6 +58,12 @@[m [mexport const update = asyncHandler(async (req, res) => {[m
+     settings[m
+   });[m
+ [m
+[32m+[m[32m  const io = getSocketIO();[m
+[32m+[m
+[32m+[m[32m   io.to(roomId).emit("meeting-settings-changed", {[m
+[32m+[m[32m       settings: meeting.settings[m
+[32m+[m[32m   });[m
+[32m+[m
+   return res.status(200).json([m
+     new ApiResponse([m
+       200,[m
+[36m@@ -68,6 +74,7 @@[m [mexport const update = asyncHandler(async (req, res) => {[m
+ });[m
+ [m
+ export const start = asyncHandler(async (req, res) => {[m
+[32m+[m[32m  console.log("START MEETING CONTROLLER HIT");[m
+   const { roomId } = req.params;[m
+ [m
+   const meeting = await startMeeting({[m
+[36m@@ -86,22 +93,24 @@[m [mexport const start = asyncHandler(async (req, res) => {[m
+ });[m
+ [m
+ export const end = asyncHandler(async (req, res) => {[m
+[31m-  const { roomId } = req.params;[m
+[31m-  [m
+[32m+[m[32m    const { roomId } = req.params;[m
+ [m
+[31m-  const meeting = await endMeeting({[m
+[31m-    roomId,[m
+[31m-    userId: req.user.userId[m
+[31m-  });[m
+[31m- [m
+[32m+[m[32m    const meeting = await endMeeting({[m
+[32m+[m[32m        roomId,[m
+[32m+[m[32m        userId: req.user.userId[m
+[32m+[m[32m    });[m
+ [m
+[31m-  return res.status(200).json([m
+[31m-    new ApiResponse([m
+[31m-      200,[m
+[31m-      meeting,[m
+[31m-      "Meeting ended successfully"[m
+[31m-    )[m
+[31m-  );[m
+[32m+[m[32m    const io = getSocketIO();[m
+[32m+[m
+[32m+[m[32m    io.to(roomId).emit("meeting-ended");[m
+[32m+[m
+[32m+[m[32m    return res.status(200).json([m
+[32m+[m[32m        new ApiResponse([m
+[32m+[m[32m            200,[m
+[32m+[m[32m            meeting,[m
+[32m+[m[32m            "Meeting ended successfully"[m
+[32m+[m[32m        )[m
+[32m+[m[32m    );[m
+ });  [m
+ [m
+ export const joinMeetingController = asyncHandler(async (req, res) => {[m
+[36m@@ -136,4 +145,10 @@[m [mexport const leaveMeetingController = asyncHandler(async (req, res) => {[m
+       "Left meeting successfully"[m
+     )[m
+   );[m
+[31m-});[m
+\ No newline at end of file[m
+[32m+[m[32m});[m
+[32m+[m
+[32m+[m[32mexport const getMyMeetingsController = asyncHandler(async (req, res) => {[m
+[32m+[m[32m  const meetings = await getMeetings({ userId: req.user.userId });[m
+[32m+[m
+[32m+[m[32m  res.status(200).json(new ApiResponse(200,meetings,"Meetings fetched successfully"))[m
+[32m+[m[32m})[m
+\ No newline at end of file[m
+[1mdiff --git a/src/routes/meeting.route.js b/src/routes/meeting.route.js[m
+[1mindex 8238b34..f75020c 100644[m
+[1m--- a/src/routes/meeting.route.js[m
+[1m+++ b/src/routes/meeting.route.js[m
+[36m@@ -6,7 +6,8 @@[m [mimport {[m
+   start,[m
+   end,[m
+   joinMeetingController,[m
+[31m-  leaveMeetingController[m
+[32m+[m[32m  leaveMeetingController,[m
+[32m+[m[32m  getMyMeetingsController[m
+ } from "../controllers/meeting.controller.js";[m
+ import authMiddleware from "../middlewares/auth.middleware.js";[m
+ [m
+[36m@@ -14,6 +15,8 @@[m [mconst router = Router();[m
+ [m
+ router.post("/", authMiddleware, create);[m
+ [m
+[32m+[m[32mrouter.get("/", authMiddleware, getMyMeetingsController);[m
+[32m+[m
+ router.get("/:roomId", authMiddleware, getMeeting);[m
+ [m
+ router.patch("/:roomId", authMiddleware, update);[m
+[36m@@ -34,4 +37,5 @@[m [mrouter.post([m
+   leaveMeetingController[m
+ );[m
+ [m
+[32m+[m
+ export default router;[m
+\ No newline at end of file[m
+[1mdiff --git a/src/server.js b/src/server.js[m
+[1mindex 3ac92c7..7459b0d 100644[m
+[1m--- a/src/server.js[m
+[1m+++ b/src/server.js[m
+[36m@@ -3,81 +3,728 @@[m [mimport app from "./app.js"[m
+ import http from "http"[m
+ import { Server } from "socket.io"[m
+ import { connectDb } from "./config/db.js"[m
+[32m+[m[32mimport { User } from "./models/user.model.js";[m
+ import { verifyEmailConnection } from "./services/email.service.js";[m
+ import { socketAuthMiddleware } from "./middlewares/socket.middleware.js";[m
+[32m+[m[32mimport { setSocketIO } from "./socket.js";[m
+[32m+[m[32mimport { Meeting } from "./models/meeting.model.js";[m
+[32m+[m[32mimport { Participant } from "./models/participant.model.js";[m
+[32m+[m[32mimport { leftMeeting } from "./services/meeting.service.js";[m
+ [m
+ [m
+[32m+[m[32mconst waitingRoomRequests = new Map();[m
+[32m+[m
+ const PORT = process.env.PORT || 5000 [m
+ [m
+ await connectDb()[m
+ [m
+ const httpServer = http.createServer(app)[m
+ [m
+[31m-const io = new Server(httpServer, {[m
+[32m+[m[32m const io = new Server(httpServer, {[m
+   cors: {[m
+[31m-    origin:"*"[m
+[32m+[m[32m    origin: "http://localhost:8080",[m
+[32m+[m[32m    credentials: true[m
+   }[m
+[31m-})[m
+[32m+[m[32m });[m
+[32m+[m
+[32m+[m[32m setSocketIO(io);[m
+[32m+[m
+ io.use(socketAuthMiddleware);[m
+ [m
+ io.on("connection", (socket) => {[m
+[31m-  console.log(`socket connected!! :${socket.id}`)[m
+   console.log("SOCKET USER:", socket.userId);[m
+ [m
+[31m-  socket.on("join-meeting", ({ roomId })=> {[m
+[31m-    socket.join(roomId)[m
+[32m+[m[32m  socket.user = {[m
+[32m+[m[32m      userId: socket.userId[m
+[32m+[m[32m  };[m
+ [m
+[31m-    console.log(`User ${socket.userId} joined the meeting ${roomId}`)[m
+[32m+[m[32m  User.findById(socket.userId)[m
+[32m+[m[32m      .select("fullname username avatar")[m
+[32m+[m[32m      .then((user) => {[m
+ [m
+[31m-    socket.to(roomId).emit("user-joined", {[m
+[31m-      userId: socket.userId,[m
+[31m-      socketId:socket.id[m
+[31m-    })[m
+[31m-  }[m
+[31m-    )[m
+[32m+[m[32m          if (!user) {[m
+[32m+[m[32m              console.log("Socket user not found");[m
+[32m+[m[32m              socket.disconnect();[m
+[32m+[m[32m              return;[m
+[32m+[m[32m          }[m
+[32m+[m
+[32m+[m[32m          socket.user = {[m
+[32m+[m[32m              userId: user._id.toString(),[m
+[32m+[m[32m              fullname: user.fullname,[m
+[32m+[m[32m              username: user.username,[m
+[32m+[m[32m              avatar: user.avatar[m
+[32m+[m[32m          };[m
+ [m
+[31m-  socket.on("leave-meeting", ({ roomId }) => {[m
+[31m-    socket.leave(roomId)[m
+[32m+[m[32m      })[m
+[32m+[m[32m      .catch((error) => {[m
+[32m+[m[32m          console.error("Failed to load socket user:", error);[m
+[32m+[m[32m          socket.disconnect();[m
+[32m+[m[32m      });[m
+ [m
+[31m-    console.log(`User ${socket.userId} left meeting ${roomId}`);[m
+[31m-    [m
+[31m-        socket.to(roomId).emit("user-left", {[m
+[31m-          userId: socket.userId,[m
+[32m+[m[32m  socket.on("join-meeting", async ({ roomId }) => {[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      if (!roomId) {[m
+[32m+[m[32m        console.log("Join rejected: roomId is required");[m
+[32m+[m[32m        return;[m
+[32m+[m[32m      }[m
+[32m+[m[41m  [m
+[32m+[m[32m      const meeting = await Meeting.findOne({ roomId });[m
+[32m+[m[41m  [m
+[32m+[m[32m      if (!meeting) {[m
+[32m+[m[32m        console.log("Join rejected: meeting not found");[m
+[32m+[m[32m        socket.emit("meeting-join-rejected", {[m
+[32m+[m[32m          reason: "Meeting not found"[m
+         });[m
+[31m-  })[m
+[32m+[m[32m        return;[m
+[32m+[m[32m      }[m
+[32m+[m[41m  [m
+[32m+[m[32m      if (meeting.status === "ended") {[m
+[32m+[m[32m        console.log("Join rejected: meeting has ended");[m
+[32m+[m[32m        socket.emit("meeting-join-rejected", {[m
+[32m+[m[32m          reason: "Meeting has ended"[m
+[32m+[m[32m        });[m
+[32m+[m[32m        return;[m
+[32m+[m[32m      }[m
+[32m+[m[41m  [m
+[32m+[m[32m      const isHost =[m
+[32m+[m[32m        meeting.host.toString() === socket.userId.toString();[m
+[32m+[m[41m  [m
+[32m+[m[32m      // A scheduled meeting can only be entered by the host.[m
+[32m+[m[32m      if ([m
+[32m+[m[32m        meeting.status === "scheduled" &&[m
+[32m+[m[32m        !isHost[m
+[32m+[m[32m      ) {[m
+[32m+[m[32m        console.log("Join rejected: meeting has not started");[m
+[32m+[m[41m  [m
+[32m+[m[32m        socket.emit("meeting-join-rejected", {[m
+[32m+[m[32m          reason: "Meeting has not started yet"[m
+[32m+[m[32m        });[m
+[32m+[m[41m  [m
+[32m+[m[32m        return;[m
+[32m+[m[32m      }[m
+[32m+[m[41m  [m
+[32m+[m[32m      /*[m
+[32m+[m[32m       * HOST[m
+[32m+[m[32m       * Host always enters the actual Socket.IO room.[m
+[32m+[m[32m       */[m
+[32m+[m[32m      if (isHost) {[m
+[32m+[m[32m        socket.join(roomId);[m
+[32m+[m[41m  [m
+[32m+[m[32m        console.log([m
+[32m+[m[32m          `Host ${socket.userId} joined meeting ${roomId}`[m
+[32m+[m[32m        );[m
+[32m+[m[41m  [m
+[32m+[m[32m        return;[m
+[32m+[m[32m      }[m
+[32m+[m[41m  [m
+[32m+[m[32m      /*[m
+[32m+[m[32m       * WAITING ROOM[m
+[32m+[m[32m       */[m
+ [m
+[31m-  socket.on("webrtc-offer", ({ offer,targetSocketId }) => {[m
+[31m-    console.log("Received WebRTC offer from:", socket.id);[m
+[31m-    console.log("Sending offer to:", targetSocketId);[m
+[31m-    [m
+[32m+[m[32m       const waitingRequest =[m
+[32m+[m[32m           waitingRoomRequests.get(socket.id);[m
+[32m+[m[41m       [m
+[32m+[m[32m       if (meeting.settings.waitingRoom) {[m
+[32m+[m[41m       [m
+[32m+[m[32m           // User was approved by the host.[m
+[32m+[m[32m           if (waitingRequest?.approved) {[m
+[32m+[m[41m       [m
+[32m+[m[32m               // Approval has now been consumed.[m
+[32m+[m[32m               waitingRoomRequests.delete(socket.id);[m
+[32m+[m[41m       [m
+[32m+[m[32m           } else {[m
+[32m+[m[41m       [m
+[32m+[m[32m               console.log([m
+[32m+[m[32m                   `User ${socket.userId} is still waiting for approval`[m
+[32m+[m[32m               );[m
+[32m+[m[41m       [m
+[32m+[m[32m               socket.emit("waiting-room", {[m
+[32m+[m[32m                   roomId,[m
+[32m+[m[32m                   message: "Waiting for the host to admit you"[m
+[32m+[m[32m               });[m
+[32m+[m[41m       [m
+[32m+[m[32m               return;[m
+[32m+[m[32m           }[m
+[32m+[m[32m       }[m
+   [m
+[31m-    io.to(targetSocketId).emit("webrtc-offer", {[m
+[31m-      offer,[m
+[31m-      fromSocketId:socket.id[m
+[31m-    });[m
+[32m+[m[32m      /*[m
+[32m+[m[32m       * NORMAL JOIN[m
+[32m+[m[32m      

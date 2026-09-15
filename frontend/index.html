@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <link rel="stylesheet" href="/css/theme.css">
+
+    <title>Zoom Meeting</title>
+
+    <link rel="stylesheet" href="./css/meeting.css">
+</head>
+
+<body style="visibility: hidden;">
+
+    <!-- ============================= -->
+    <!-- Landing Page                  -->
+    <!-- ============================= -->
+
+    <div id="landingPage">
+
+        <h1>Zoom Meeting</h1>
+
+        <button id="createMeetingButton">
+            Create Meeting
+        </button>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Meeting Page                  -->
+    <!-- ============================= -->
+
+    <div id="meetingPage" style="display: none;">
+
+        <div class="meeting">
+
+            <!-- Header -->
+            <header class="meeting-header">
+
+                <div class="brand">
+                    <span class="brand-dot"></span>
+                    <span>Meetly</span>
+                </div>
+
+                <div class="meeting-info">
+                    <span id="roomName">Meeting</span>
+                   <span id="participantCount">Participants: 0</span>
+                
+                    <button
+                        id="startMeetingButton"
+                        class="start-button"
+                        style="display: none;"
+                    >
+                        ▶ Start Meeting
+                    </button>
+                </div>
+
+                <div id="waitingRoomOverlay" class="waiting-room-overlay" style="display: none;">
+                    <div class="waiting-room-card">
+                        <h2>Waiting for the host</h2>
+                        <p>
+                            The host has been notified. You'll enter the meeting
+                            when the host admits you.
+                        </p>
+                
+                        <button id="leaveWaitingRoomButton">
+                            Leave
+                        </button>
+                    </div>
+                </div>
+
+            </header>
+
+            <aside id="chatPanel" class="chat-panel">
+            
+                <div class="chat-header">
+                    Chat
+                </div>
+            
+                <div id="chatMessages" class="chat-messages">
+                </div>
+            
+                <div class="chat-input-area">
+                    <input
+                        type="text"
+                        id="chatInput"
+                        placeholder="Type a message..."
+                    />
+            
+                    <button id="sendMessageButton">
+                        Send
+                    </button>
+                </div>
+            
+            </aside>
+
+            <aside
+                id="participantsPanel"
+                class="participants-panel"
+                style="display: none;"
+            >
+            
+                <div class="participants-header">
+                    Participants
+                    <span id="participantCountPanel">0</span>
+                </div>
+            
+                <!-- ============================= -->
+                <!-- Waiting Requests              -->
+                <!-- ============================= -->
+            
+                <div id="waitingSection" class="participants-section">
+            
+                    <div class="section-title">
+                        Waiting for approval
+                        <span id="waitingCount">0</span>
+                    </div>
+            
+                    <div id="waitingParticipants" class="participants-list">
+                        <!-- Waiting requests will be added by JavaScript -->
+                    </div>
+            
+                </div>
+            
+            
+                <!-- ============================= -->
+                <!-- Accepted Participants        -->
+                <!-- ============================= -->
+            
+                <div class="participants-section">
+            
+                    <div class="section-title">
+                        In Meeting
+                    </div>
+            
+                    <div id="meetingParticipants" class="participants-list">
+                        <!-- Accepted participants will be added by JavaScript -->
+                    </div>
+            
+                </div>
+            
+            </aside>
+
+            <!-- Video Area -->
+            <main class="video-area">
+
+                <div id="remoteVideos" class="video-grid">
+
+                    <!-- Remote videos will be created by JavaScript -->
+
+                </div>
+
+
+                <!-- Local video -->
+                <div class="local-video-container">
+
+                    <video
+                        id="localVideo"
+                        autoplay
+                        playsinline
+                        muted
+                    ></video>
+
+                    <div class="video-label">
+                        You
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <!-- Controls -->
+            <footer class="meeting-controls">
+            
+                <div class="control-group">
+            
+                    <button
+                        id="audioButton"
+                        class="control-button"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z"
+                            />
+                            <path
+                                d="M19 11a7 7 0 0 1-14 0M12 18v3M8 21h8"
+                            />
+                        </svg>
+                        <span>Mute</span>
+                    </button>
+            
+            
+                    <button
+                        id="videoButton"
+                        class="control-button"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="3"
+                                y="6"
+                                width="13"
+                                height="12"
+                                rx="2"
+                            />
+                            <path d="m16 10 5-3v10l-5-3" />
+                        </svg>
+                        <span>Stop Video</span>
+                    </button>
+            
+            
+                    <button
+                        id="screenShareButton"
+                        class="control-button"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="3"
+                                y="4"
+                                width="18"
+                                height="13"
+                                rx="2"
+                            />
+                            <path d="M8 21h8M12 17v4" />
+                        </svg>
+                        <span>Share Screen</span>
+                    </button>
+
+                    <button
+                        id="chatButton"
+                        class="control-button"
+                    >
+                        Chat
+                    </button>
+
+                    <button
+                        id="participantsButton"
+                        class="control-button"
+                    >
+                        Participants
+                    </button>
+
+                    <button id="meetingSettingsButton">
+                        Settings
+                    </button>
+                    
+                    <div id="meetingSettingsPanel" class="meeting-settings-panel">
+                    
+                        <div class="settings-header">
+                            <h3>Meeting Settings</h3>
+                        </div>
+                    
+                        <div class="setting-row">
+                            <div>
+                                <strong>Waiting Room</strong>
+                                <span>Control who can enter the meeting.</span>
+                            </div>
+                    
+                            <input
+                                type="checkbox"
+                                id="waitingRoomToggle"
+                            />
+                        </div>
+                    
+                        <div class="setting-row">
+                            <div>
+                                <strong>Screen Share</strong>
+                                <span>Allow participants to share their screen.</span>
+                            </div>
+                    
+                            <input
+                                type="checkbox"
+                                id="allowScreenShareToggle"
+                            />
+                        </div>
+                    
+                        <div class="setting-row">
+                            <div>
+                                <strong>Chat</strong>
+                                <span>Allow participants to use meeting chat.</span>
+                            </div>
+                    
+                            <input
+                                type="checkbox"
+                                id="allowChatToggle"
+                            />
+                        </div>
+                    
+                    </div>
+            
+                </div>
+
+                <button
+                    id="endMeetingButton"
+                    class="end-button"
+                    style="display: none;"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path d="M5 5l14 14" />
+                        <path d="M19 5 5 19" />
+                    </svg>
+                    <span>End Meeting</span>
+                </button>
+            
+                <button
+                    id="leaveButton"
+                    class="leave-button"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path d="M10 17l5-5-5-5" />
+                        <path d="M15 12H3" />
+                        <path d="M21 19V5a2 2 0 0 0-2-2h-6" />
+                    </svg>
+                    <span>Leave</span>
+                </button>
+            
+            </footer>
+        </div>
+
+    </div>
+
+
+    <!-- Socket.IO -->
+
+    <!-- ============================= -->
+    <!-- Toast Notification            -->
+    <!-- ============================= -->
+    
+    <div id="toastContainer" class="toast-container"></div>
+    
+    
+    <!-- ============================= -->
+    <!-- Confirmation Modal             -->
+    <!-- ============================= -->
+    
+    <div
+        id="confirmationModal"
+        class="confirmation-modal"
+        style="display: none;"
+    >
+        <div class="confirmation-card">
+    
+            <h3 id="confirmationTitle">
+                Confirm Action
+            </h3>
+    
+            <p id="confirmationMessage">
+                Are you sure?
+            </p>
+    
+            <div class="confirmation-actions">
+    
+                <button
+                    id="confirmationCancel"
+                    class="confirmation-cancel"
+                >
+                    Cancel
+                </button>
+    
+                <button
+                    id="confirmationConfirm"
+                    class="confirmation-confirm"
+                >
+                    Confirm
+                </button>
+    
+            </div>
+    
+        </div>
+    </div>
+    
+    <script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
+    <script src="/js/config.js"></script>
+    
+
+    <!-- Application -->
+
+    <script
+        type="module"
+       src="./js/index.js"
+    ></script>
+
+</body>
+
+</html>
