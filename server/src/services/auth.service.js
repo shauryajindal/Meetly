@@ -21,11 +21,13 @@ export const registerUser = async ({ fullname,username, email, password }) => {
 
   const hashedPassword = await bcrypt.hash(password, 12)
 
-  const user = await User.create({
-    fullname,
-    username: username,
-    email: normalizedEmail,
-  })
+const user = await User.create({
+  fullname,
+  username: username,
+  email: normalizedEmail,
+  isActive: true,
+  emailVerified: true
+})
   await AuthIdentity.create({
     user: user._id,
     provider: "password",
@@ -44,10 +46,14 @@ export const registerUser = async ({ fullname,username, email, password }) => {
      otpHash,
      expiresAt: new Date(Date.now() + 10 * 60 * 1000)
   });
+try {
   await sendVerificationEmail({
     email: user.email,
     otp
   });
+} catch (error) {
+  console.log("Verification email could not be sent:", error.message);
+}
 
   console.log("EMAIL VERIFICATION OTP:", otp);
   
