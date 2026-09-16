@@ -7,10 +7,18 @@ const screenPeerConnections = new Map();
 const pendingScreenCandidates = new Map();
 
 
+const ICE_CONFIG = {
+    iceServers: [
+        {
+            urls: "stun:stun.l.google.com:19302"
+        }
+    ]
+};
+
 function createPeerConnection(remoteSocketId) {
     console.log("CREATING PEER CONNECTION FOR:", remoteSocketId);
 
-  const peerConnection = new RTCPeerConnection();
+  const peerConnection = new RTCPeerConnection(ICE_CONFIG);
 
 
     const localStream = getLocalStream();
