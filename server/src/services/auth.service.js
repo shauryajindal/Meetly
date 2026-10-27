@@ -35,27 +35,27 @@ const user = await User.create({
     passwordHash:hashedPassword
   })
 
-  const otp = Math.floor(
-    100000 + Math.random() * 900000
-  ).toString();
+//   const otp = Math.floor(
+//     100000 + Math.random() * 900000
+//   ).toString();
 
-  const otpHash = await bcrypt.hash(otp, 12)
+//   const otpHash = await bcrypt.hash(otp, 12)
 
-  await EmailVerification.create({
-     user: user._id,
-     otpHash,
-     expiresAt: new Date(Date.now() + 10 * 60 * 1000)
-  });
-try {
-  await sendVerificationEmail({
-    email: user.email,
-    otp
-  });
-} catch (error) {
-  console.log("Verification email could not be sent:", error.message);
-}
+//   await EmailVerification.create({
+//      user: user._id,
+//      otpHash,
+//      expiresAt: new Date(Date.now() + 10 * 60 * 1000)
+//   });
+// try {
+//   await sendVerificationEmail({
+//     email: user.email,
+//     otp
+//   });
+// } catch (error) {
+//   console.log("Verification email could not be sent:", error.message);
+// }
 
-  console.log("EMAIL VERIFICATION OTP:", otp);
+  // console.log("EMAIL VERIFICATION OTP:", otp);
   
   return {
     id:user._id,
