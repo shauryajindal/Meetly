@@ -51,17 +51,7 @@ registerForm.addEventListener("submit", async (event) => {
 
     console.log("Registration successful:", data.data);
 
-    /*
-      Registration does NOT log the user in.
-
-      The backend has already:
-      1. Created the user
-      2. Created the verification OTP
-      3. Sent the OTP to the user's email
-    */
-
-    window.location.href =
-      `/pages/verify.html?email=${encodeURIComponent(email)}`;
+   window.location.href = "/pages/login.html";
 
   } catch (error) {
     console.error("Registration error:", error);
